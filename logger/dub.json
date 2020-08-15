@@ -1,0 +1,13 @@
+{
+	"authors": [
+		"ray45422"
+	],
+	"copyright": "Copyright © 2020, ray45422",
+	"dependencies": {
+		"mongo-standalone": "~>0.0.7",
+		"serial-port": "~>1.2.0"
+	},
+	"description": "Sensor logger",
+	"license": "MIT",
+	"name": "logger"
+}
