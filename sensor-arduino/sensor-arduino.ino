@@ -12,7 +12,9 @@
 #define SEALEVELPRESSURE_HPA (1013.25)
 #define REQUEST_CNT 8
 #define RESPONSE_CNT 9
-#define UPDATE_TIME 10000
+
+#define LIGHT_MAX_VOLT 942.0 // max 4.6V
+#define LIGHT_MAX_LUX 4100.0 // 4100lux at 4.6V
 
 Adafruit_BME280 bme; // I2C
 
@@ -26,6 +28,9 @@ const uint8_t autocalib_off[REQUEST_CNT]  = {0xff, 0x01, 0x79, 0x00, 0x00, 0x00,
 int co2ppm = 0;
 int co2tmp = 0;
 int co2stt = 0;
+int light = 0;
+
+String cmd = "";
 
 void setup() {
     Serial.begin(115200);
@@ -38,10 +43,17 @@ void setup() {
     }
 }
 
-void loop() { 
-    printValues();
-    getCO2Data();
-    delay(UPDATE_TIME);
+void loop() {
+    if(Serial.available() > 0) {
+        cmd = Serial.readStringUntil('\n');
+    } else {
+      cmd = "";
+    }
+    if(cmd == "get") {
+        light = analogRead(0) / LIGHT_MAX_VOLT * LIGHT_MAX_LUX;
+        getCO2Data();
+        printValues();
+    }
 }
 
 void printValues() {
@@ -69,6 +81,9 @@ void printValues() {
     Serial.print(",");
     Serial.print("\"co2status\":");
     Serial.print(co2stt);
+    Serial.print(",");
+    Serial.print("\"luminance\":");
+    Serial.print(light);
     Serial.println("}");
 }
 
